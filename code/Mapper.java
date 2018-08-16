@@ -3,6 +3,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
@@ -115,6 +116,30 @@ public class Mapper extends GUI {
 		if (str.length() != 0)
 			str = str.substring(0, str.length() - 2);
 		getTextOutputArea().setText(str);
+	}
+
+	protected void onDrag(int x, int y){
+		Point p = origin.asPoint(origin, scale);
+		p.move(x, y);
+		origin = Location.newFromPoint(p, origin, scale);
+	}
+
+	@Override
+	protected void onWheel(MouseWheelEvent e) {
+		int rotation = e.getWheelRotation();
+		if(rotation>0){
+			if (scale < MAX_ZOOM) {
+			// yes, this does allow you to go slightly over/under the
+			// max/min scale, but it means that we always zoom exactly to
+			// the centre.
+			scaleOrigin(true);
+			scale *= ZOOM_FACTOR;
+		}}
+		if(rotation<0){
+			if (scale > MIN_ZOOM) {
+			scaleOrigin(false);
+			scale /= ZOOM_FACTOR;
+		}}
 	}
 
 	@Override

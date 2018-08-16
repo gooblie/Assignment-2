@@ -1,32 +1,9 @@
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.io.File;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.text.DefaultCaret;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
 
 /**
  * This is a template GUI that you can use for your mapping program. It is an
@@ -75,6 +52,11 @@ public abstract class GUI {
 	 * Move enum is passed, representing the button clicked by the user.
 	 */
 	protected abstract void onMove(Move m);
+
+	protected abstract void onDrag(int x, int y);
+
+	protected abstract void onWheel(MouseWheelEvent e);
+
 
 	/**
 	 * Is called when the user has successfully selected a directory to load the
@@ -133,7 +115,7 @@ public abstract class GUI {
 	// assignment up to and including completion.
 	// --------------------------------------------------------------------
 
-	private static final boolean UPDATE_ON_EVERY_CHARACTER = false;
+	private static final boolean UPDATE_ON_EVERY_CHARACTER = true;
 
 	private static final int DEFAULT_DRAWING_HEIGHT = 400;
 	private static final int DEFAULT_DRAWING_WIDTH = 400;
@@ -164,6 +146,9 @@ public abstract class GUI {
 
 	private JTextField search;
 	private JFileChooser fileChooser;
+
+	private int prevX;
+	private int prevY;
 
 	public GUI() {
 		initialise();
@@ -378,10 +363,26 @@ public abstract class GUI {
 				onClick(e);
 				redraw();
 			}
+			public void mousePressed(MouseEvent e){
+				prevX = e.getX();
+				prevY = e.getY();
+			}
+		});
+
+		drawing.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				onDrag(prevX-e.getX(), prevY-e.getY());
+				prevX = e.getX();
+				prevY = e.getY();
+				redraw();
+			}
 		});
 
 		drawing.addMouseWheelListener(new MouseAdapter() {
 			public void mouseWheelMoved(MouseWheelEvent e) {
+				onWheel(e);
+				redraw();
 			}
 		});
 
