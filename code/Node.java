@@ -1,9 +1,7 @@
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Node represents an intersection in the road graph. It stores its ID and its
@@ -38,6 +36,22 @@ public class Node {
 		int size = (int) (Mapper.NODE_GRADIENT * Math.log(scale) + Mapper.NODE_INTERCEPT);
 		g.fillRect(p.x - size / 2, p.y - size / 2, size, size);
 	}
+
+	//returns
+	public Map<Node, Double> getNeighbors() {
+		Map<Node, Double> neighbors = new HashMap<>();
+		//TODO: prevent the adding of nodes from connecting road segments that have restricted access from this node
+		for (Segment segment: segments) {
+			if(!segment.end.equals(this)){
+				neighbors.put(segment.end, segment.length);
+			}else if(!segment.road.oneway){
+				neighbors.put(segment.start, segment.length);
+			}
+		}
+		return neighbors;
+	}
+
+
 
 	public String toString() {
 		Set<String> edges = new HashSet<String>();
