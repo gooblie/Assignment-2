@@ -5,8 +5,10 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * This is the main class for the mapping program. It extends the GUI abstract
@@ -45,6 +47,11 @@ public class Mapper extends GUI {
 	private Graph graph;
 	private Trie trie;
 
+	//boolean to determine if the find route button has been clicked
+	private boolean findingRoute;
+	private Node node1;
+	private Node node2;
+
 	@Override
 	protected void redraw(Graphics g) {
 		if (graph != null)
@@ -68,8 +75,18 @@ public class Mapper extends GUI {
 
 		// if it's close enough, highlight it and show some information.
 		if (clicked.distance(closest.location) < MAX_CLICKED_DISTANCE) {
-			graph.setHighlight(closest);
-			getTextOutputArea().setText(closest.toString());
+			if (findingRoute){
+				if (node1 == null){
+					node1 = closest;
+				}else if(node2 == null){
+					node2 = closest;
+					findRoute();
+				}
+			}else{
+				graph.setHighlight(closest);
+				getTextOutputArea().setText(closest.toString());
+			}
+
 		}
 	}
 
@@ -174,6 +191,26 @@ public class Mapper extends GUI {
 		trie = new Trie(graph.roads.values());
 		origin = new Location(-250, 250); // close enough
 		scale = 1;
+	}
+
+	@Override
+	protected void findingRoute() {
+		findingRoute = true;
+		graph.setHighlightedSegments(new ArrayList<>());
+	}
+
+	private void findRoute() {
+		Searcher searcher = new Searcher(graph);
+		List<Segment> path = searcher.findShortestPath(node1, node2, n -> n.location.distance(node2.location));
+		String stringPath = "";
+		for (Segment s : path) {
+			stringPath += s.toString()+"\n";
+		}
+		graph.setHighlightedSegments(path);
+		getTextOutputArea().setText(stringPath);
+		node1 = null;
+		node2 = null;
+		findingRoute = false;
 	}
 
 	/**

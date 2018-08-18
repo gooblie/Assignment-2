@@ -18,7 +18,7 @@ public class Searcher {
         List<Segment> edges = new ArrayList<>();
         SearchNode currentNode = node;
         while(currentNode.getPrev()!=null){
-            edges.add(node.getEdge());
+            edges.add(currentNode.getEdge());
             currentNode = currentNode.getPrev();
         }
         Collections.reverse(edges);

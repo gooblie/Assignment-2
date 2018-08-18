@@ -3,10 +3,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.io.File;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This represents the data structure storing all the roads, nodes, and
@@ -25,6 +22,7 @@ public class Graph {
 
 	Node highlightedNode;
 	Collection<Road> highlightedRoads = new HashSet<>();
+	Collection<Segment> highlightedSegments = new HashSet<>();
 
 	public Graph(File nodes, File roads, File segments, File polygons) {
 		this.nodes = Parser.parseNodes(nodes, this);
@@ -52,6 +50,10 @@ public class Graph {
 				seg.draw(g2, origin, scale);
 			}
 		}
+		//draw all the highlighted segments
+		for (Segment segment: highlightedSegments) {
+			segment.draw(g2, origin, scale);
+		}
 
 		// draw all the nodes.
 		g2.setColor(Mapper.NODE_COLOUR);
@@ -72,6 +74,11 @@ public class Graph {
 	public void setHighlight(Collection<Road> roads) {
 		this.highlightedRoads = roads;
 	}
+
+	public void setHighlightedSegments(Collection<Segment> segments) {
+		this.highlightedSegments = segments;
+	}
+
 }
 
 // code for COMP261 assignments
