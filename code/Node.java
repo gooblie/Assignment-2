@@ -37,7 +37,7 @@ public class Node {
 		g.fillRect(p.x - size / 2, p.y - size / 2, size, size);
 	}
 
-	//returns
+	//returns the neighbor nodes of the current value, mapped to the length of the edge that connects them
 	public Map<Node, Double> getNeighbors() {
 		Map<Node, Double> neighbors = new HashMap<>();
 		//TODO: prevent the adding of nodes from connecting road segments that have restricted access from this node
