@@ -59,6 +59,8 @@ public abstract class GUI {
 
 	protected abstract void findingRoute();
 
+	protected abstract void findArtPnts();
+
 
 	/**
 	 * Is called when the user has successfully selected a directory to load the
@@ -276,6 +278,15 @@ public abstract class GUI {
 			}
 		});
 
+		JButton findArticulationPoints = new JButton("Find Articulation Points");
+		findArticulationPoints.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				findArtPnts();
+				redraw();
+			}
+		});
+
 		// next, make the search box at the top-right. we manually fix
 		// it's size, and add an action listener to call your code when
 		// the user presses enter.
@@ -352,6 +363,7 @@ public abstract class GUI {
 		controls.add(Box.createRigidArea(new Dimension(5, 0)));
 		controls.add(search);
 		controls.add(routeFinder);
+		controls.add(findArticulationPoints);
 
 		/*
 		 * then make the drawing canvas, which is really just a boring old

@@ -212,6 +212,12 @@ public class Mapper extends GUI {
 		getTextOutputArea().setText(stringPath);
 		findingRoute = false;
 	}
+	@Override
+	protected void findArtPnts(){
+        Searcher searcher = new Searcher(graph);
+	    int size = searcher.findArtPnts().size();
+        System.out.println("no of articulation points: "+size);
+    }
 
 	/**
 	 * This method does the nasty logic of making sure we always zoom into/out

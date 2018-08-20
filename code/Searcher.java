@@ -60,11 +60,14 @@ public class Searcher {
     private Node getRandomNode(Collection<Node> from) {
         Random rnd = new Random();
         int i = rnd.nextInt(from.size());
-        return (Node)from.toArray()[i];
+        return (Node)from.toArray()[0];
     }
 
-    public List<Node> findArtPnts(){
-        List<Node> artPnts = new ArrayList<>();
+    public Set<Node> findArtPnts(){
+        Set<Node> artPnts = new HashSet<>();
+        counts = new HashMap<>();
+        reachback = new HashMap<>();
+        children = new HashMap<>();
         for (Node n: graph.nodes.values()) {
             counts.put(n, Integer.MAX_VALUE);
         }
@@ -79,8 +82,8 @@ public class Searcher {
         return artPnts;
     }
 
-    public List<Node> iterArtPts(Node firstNode, int count, Node root){
-        List<Node> artPnts = new ArrayList<>();
+    public Set<Node> iterArtPts(Node firstNode, int count, Node root){
+        Set<Node> artPnts = new HashSet<>();
         Stack<APNode> stack = new Stack<>();
         stack.push(new APNode(firstNode, count, root));
         while(!stack.isEmpty()){
@@ -95,7 +98,7 @@ public class Searcher {
                 if(counts.get(child)<Integer.MAX_VALUE){
                     reachback.replace(current.getNode(), Math.min(reachback.get(current.getNode()), counts.get(child)));
                 }else{
-                    stack.push(new APNode(child, count+1, current.getNode()));
+                    stack.push(new APNode(child, current.getCount()+1, current.getNode()));
                 }
             }else{
                 if(!current.getNode().equals(firstNode)){
@@ -103,8 +106,9 @@ public class Searcher {
                     if(reachback.get(current.getNode())>= counts.get(current.getParent())){
                         artPnts.add(current.getParent());
                     }
-                    stack.remove(current);
+
                 }
+                stack.remove(current);
             }
         }
         return artPnts;
