@@ -60,58 +60,81 @@ public class Searcher {
     private Node getRandomNode(Collection<Node> from) {
         Random rnd = new Random();
         int i = rnd.nextInt(from.size());
-        return (Node)from.toArray()[0];
+        return (Node)from.toArray()[i];
     }
 
     public Set<Node> findArtPnts(){
         Set<Node> artPnts = new HashSet<>();
         counts = new HashMap<>();
-        reachback = new HashMap<>();
-        children = new HashMap<>();
+//      reachback = new HashMap<>();
+//      children = new HashMap<>();
         for (Node n: graph.nodes.values()) {
             counts.put(n, Integer.MAX_VALUE);
         }
         int numSubTrees = 0;
         Node root = getRandomNode(graph.nodes.values());
-        counts.replace(root, 0);
+        counts.put(root, 0);
         for (Node n: root.getNeighbors().values()) {
-            artPnts.addAll(iterArtPts(n, 1, root));
-            numSubTrees++;
+            if (counts.get(n) == Integer.MAX_VALUE){
+                recArtPts(n, 1, root, artPnts);
+                numSubTrees++;
+            }
         }
         if(numSubTrees>1){artPnts.add(root);}
         return artPnts;
     }
 
-    public Set<Node> iterArtPts(Node firstNode, int count, Node root){
-        Set<Node> artPnts = new HashSet<>();
-        Stack<APNode> stack = new Stack<>();
-        stack.push(new APNode(firstNode, count, root));
-        while(!stack.isEmpty()){
-            APNode current = stack.peek();
-            if(counts.get(current.getNode()) == Integer.MAX_VALUE){
-                counts.replace(current.getNode(), current.getCount());
-                reachback.put(current.getNode(), current.getCount());
-                children.put(current.getNode(), current.getNode().getNeighbors().values());
-            }else if(!children.get(current.getNode()).isEmpty()){
-                Node child = getRandomNode(children.get(current.getNode()));
-                children.get(current.getNode()).remove(child);
-                if(counts.get(child)<Integer.MAX_VALUE){
-                    reachback.replace(current.getNode(), Math.min(reachback.get(current.getNode()), counts.get(child)));
-                }else{
-                    stack.push(new APNode(child, current.getCount()+1, current.getNode()));
+//    public Set<Node> iterArtPts(Node firstNode, int count, Node root){
+//        Set<Node> artPnts = new HashSet<>();
+//        Stack<APNode> stack = new Stack<>();
+//        stack.push(new APNode(firstNode, count, root));
+//        while(!stack.isEmpty()){
+//            APNode current = stack.peek();
+//            if(counts.get(current.getNode()) == Integer.MAX_VALUE){
+//                counts.replace(current.getNode(), current.getCount());
+//                reachback.put(current.getNode(), current.getCount());
+//                children.put(current.getNode(), current.getNode().getNeighbors().values());
+//            }else if(!children.get(current.getNode()).isEmpty()){
+//                Node child = (Node)children.get(current.getNode()).toArray()[0];
+//                children.get(current.getNode()).remove(child);
+//                if(counts.get(child)<Integer.MAX_VALUE){
+//                    reachback.replace(current.getNode(), Math.min(reachback.get(current.getNode()), counts.get(child)));
+//                }else{
+//                    stack.push(new APNode(child, current.getCount()+1, current.getNode()));
+//                }
+//            }else{
+//                if(!current.getNode().equals(firstNode)){
+//                    reachback.replace(current.getParent(), Math.min(reachback.get(current.getNode()), reachback.get(current.getParent())));
+//                    if(reachback.get(current.getNode()) >= counts.get(current.getParent())){
+//                        artPnts.add(current.getParent());
+//                    }
+//
+//                }
+//                stack.remove(current);
+//            }
+//        }
+//        return artPnts;
+//    }
+
+    public int recArtPts(Node node, int count, Node parent, Collection<Node> artPnts){
+        counts.replace(node, count);
+        int reachBack = count;
+        for (Node neighbor: node.getNeighbors().values()) {
+            if(!neighbor.equals(parent)){
+                if(counts.get(neighbor)<Integer.MAX_VALUE){
+                    reachBack = Math.min(counts.get(neighbor), reachBack);
                 }
-            }else{
-                if(!current.getNode().equals(firstNode)){
-                    reachback.replace(current.getParent(), Math.min(reachback.get(current.getNode()), reachback.get(current.getParent())));
-                    if(reachback.get(current.getNode())>= counts.get(current.getParent())){
-                        artPnts.add(current.getParent());
+                else{
+                    int childReach = recArtPts(neighbor, count+1, node, artPnts);
+                    reachBack = Math.min(childReach, reachBack);
+                    if(childReach >= count) {
+                        artPnts.add(node);
                     }
 
                 }
-                stack.remove(current);
             }
         }
-        return artPnts;
+        return reachBack;
     }
 
 }
