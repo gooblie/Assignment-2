@@ -9,6 +9,9 @@ import java.util.function.Function;
  */
 public class Searcher {
     private Graph graph;
+    private Map<Node, Integer> counts;
+    private Map<Node, Integer> reachback;
+    private Map<Node, Collection<Node>> children;
 
     public Searcher(Graph graph) {
         this.graph = graph;
@@ -52,6 +55,59 @@ public class Searcher {
             }
         }
         return null;
+    }
+
+    private Node getRandomNode(Collection<Node> from) {
+        Random rnd = new Random();
+        int i = rnd.nextInt(from.size());
+        return (Node)from.toArray()[i];
+    }
+
+    public List<Node> findArtPnts(){
+        List<Node> artPnts = new ArrayList<>();
+        for (Node n: graph.nodes.values()) {
+            counts.put(n, Integer.MAX_VALUE);
+        }
+        int numSubTrees = 0;
+        Node root = getRandomNode(graph.nodes.values());
+        counts.replace(root, 0);
+        for (Node n: root.getNeighbors().values()) {
+            artPnts.addAll(iterArtPts(n, 1, root));
+            numSubTrees++;
+        }
+        if(numSubTrees>1){artPnts.add(root);}
+        return artPnts;
+    }
+
+    public List<Node> iterArtPts(Node firstNode, int count, Node root){
+        List<Node> artPnts = new ArrayList<>();
+        Stack<APNode> stack = new Stack<>();
+        stack.push(new APNode(firstNode, count, root));
+        while(!stack.isEmpty()){
+            APNode current = stack.peek();
+            if(counts.get(current.getNode()) == Integer.MAX_VALUE){
+                counts.replace(current.getNode(), current.getCount());
+                reachback.put(current.getNode(), current.getCount());
+                children.put(current.getNode(), current.getNode().getNeighbors().values());
+            }else if(!children.get(current.getNode()).isEmpty()){
+                Node child = getRandomNode(children.get(current.getNode()));
+                children.get(current.getNode()).remove(child);
+                if(counts.get(child)<Integer.MAX_VALUE){
+                    reachback.replace(current.getNode(), Math.min(reachback.get(current.getNode()), counts.get(child)));
+                }else{
+                    stack.push(new APNode(child, count+1, current.getNode()));
+                }
+            }else{
+                if(!current.getNode().equals(firstNode)){
+                    reachback.replace(current.getParent(), Math.min(reachback.get(current.getNode()), reachback.get(current.getParent())));
+                    if(reachback.get(current.getNode())>= counts.get(current.getParent())){
+                        artPnts.add(current.getParent());
+                    }
+                    stack.remove(current);
+                }
+            }
+        }
+        return artPnts;
     }
 
 }

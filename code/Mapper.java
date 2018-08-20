@@ -196,6 +196,8 @@ public class Mapper extends GUI {
 	@Override
 	protected void findingRoute() {
 		findingRoute = true;
+		node1 = null;
+		node2 = null;
 		graph.setHighlightedSegments(new ArrayList<>());
 	}
 
@@ -208,8 +210,6 @@ public class Mapper extends GUI {
 		}
 		graph.setHighlightedSegments(path);
 		getTextOutputArea().setText(stringPath);
-		node1 = null;
-		node2 = null;
 		findingRoute = false;
 	}
 
