@@ -201,10 +201,27 @@ public class Mapper extends GUI {
 	private void findRoute() {
 		Searcher searcher = new Searcher(graph);
 		List<Segment> path = searcher.findShortestPath(node1, node2, n -> n.location.distance(node2.location));
+
+		double totalDistance = 0;
 		String stringPath = "";
+		String road = "";
+		double roadLength = 0;
 		for (Segment s : path) {
-			stringPath += s.toString()+"\n";
+			if(s.road.name.equals(road)){
+				roadLength += s.length;
+			}else{
+				if(roadLength!=0){
+					stringPath += String.format("%.2f", roadLength)+"km\n";
+				}
+				stringPath+=s.road.name+": ";
+				roadLength = s.length;
+			}
+			road = s.road.name;
+			totalDistance+=s.length;
 		}
+		stringPath += String.format("%.2f", roadLength)+"km\n\n";
+		stringPath += "Total distance = "+ String.format("%.2f", totalDistance)+"km";
+
 		graph.setHighlightedSegments(path);
 		getTextOutputArea().setText(stringPath);
 		findingRoute = false;

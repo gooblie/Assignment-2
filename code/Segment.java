@@ -43,10 +43,6 @@ public class Segment {
 		}
 	}
 
-	@Override
-	public String toString() {
-		return road.name+" "+length;
-	}
 }
 
 // code for COMP261 assignments
