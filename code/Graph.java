@@ -1,7 +1,4 @@
-import java.awt.BasicStroke;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.io.File;
 import java.util.*;
 
@@ -23,6 +20,7 @@ public class Graph {
 	Node highlightedNode;
 	Collection<Road> highlightedRoads = new HashSet<>();
 	Collection<Segment> highlightedSegments = new HashSet<>();
+	Collection<Node> highlightedNodes = new HashSet<>();
 
 	public Graph(File nodes, File roads, File segments, File polygons) {
 		this.nodes = Parser.parseNodes(nodes, this);
@@ -65,6 +63,13 @@ public class Graph {
 			g2.setColor(Mapper.HIGHLIGHT_COLOUR);
 			highlightedNode.draw(g2, screen, origin, scale);
 		}
+
+		g2.setColor(Color.RED);
+		//draw all the highlighted nodes
+		for (Node n: highlightedNodes) {
+			n.draw(g2, screen, origin, scale);
+		}
+
 	}
 
 	public void setHighlight(Node node) {
@@ -79,6 +84,9 @@ public class Graph {
 		this.highlightedSegments = segments;
 	}
 
+	public void setHighlightedNodes(Collection<Node> highlightedNodes) {
+		this.highlightedNodes = highlightedNodes;
+	}
 }
 
 // code for COMP261 assignments

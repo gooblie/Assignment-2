@@ -51,6 +51,20 @@ public class Node {
 		return neighbors;
 	}
 
+	public Set<Node> getChildren() {
+		Set<Node> neighbors = new HashSet<>();
+		for (Segment segment: segments) {
+			if(!segment.end.equals(this)){
+				neighbors.add(segment.end);
+			}
+			if(!segment.start.equals(this)){
+				neighbors.add(segment.start);
+			}
+
+		}
+		return neighbors;
+	}
+
 
 
 	public String toString() {
@@ -67,18 +81,6 @@ public class Node {
 		return str.substring(0, str.length() - 2);
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Node node = (Node) o;
-		return nodeID == node.nodeID;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(nodeID);
-	}
 }
 
 // code for COMP261 assignments

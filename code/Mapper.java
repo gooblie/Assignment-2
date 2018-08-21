@@ -5,10 +5,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * This is the main class for the mapping program. It extends the GUI abstract
@@ -215,8 +212,9 @@ public class Mapper extends GUI {
 	@Override
 	protected void findArtPnts(){
         Searcher searcher = new Searcher(graph);
-	    int size = searcher.findArtPnts().size();
-        System.out.println("no of articulation points: "+size);
+	    Set<Node> artPnts = searcher.findArtPnts();
+        System.out.println("no of articulation points: " + artPnts.size());
+        graph.setHighlightedNodes(searcher.findArtPnts());
     }
 
 	/**
