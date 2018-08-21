@@ -71,20 +71,26 @@ public class Searcher {
         for (Node n: graph.nodes.values()) {
             counts.put(n, Integer.MAX_VALUE);
         }
-        int numSubTrees = 0;
-        Node root = getRandomNode(graph.nodes.values());
-        counts.put(root, 0);
-        for (Node n: root.getChildren()) {
-            if (counts.get(n) == Integer.MAX_VALUE){
-                artPnts.addAll(iterArtPts(n, 1, root));
-                numSubTrees++;
+        Collection<Node> unvisited = new HashSet<Node>(graph.nodes.values());
+        while(!unvisited.isEmpty()){
+            int numSubTrees = 0;
+            Node root = getRandomNode(unvisited);
+            unvisited.remove(root);
+            counts.put(root, 0);
+            for (Node n: root.getChildren()) {
+                if (counts.get(n) == Integer.MAX_VALUE){
+                    artPnts.addAll(iterArtPts(n, 1, root, unvisited));
+                    numSubTrees++;
+                }
             }
+            if(numSubTrees>1){artPnts.add(root);}
         }
-        if(numSubTrees>1){artPnts.add(root);}
         return artPnts;
+
+
     }
 
-    public Set<Node> iterArtPts(Node firstNode, int count, Node root){
+    public Set<Node> iterArtPts(Node firstNode, int count, Node root, Collection<Node> unvisted){
         Set<Node> artPnts = new HashSet<>();
         Stack<APNode> stack = new Stack<>();
         stack.push(new APNode(firstNode, count, root));
@@ -111,10 +117,12 @@ public class Searcher {
 
                 }
                 stack.remove(current);
+                unvisted.remove(current.getNode());
             }
         }
         return artPnts;
     }
+
 
     public int recArtPts(Node node, int count, Node parent, Collection<Node> artPnts){
         counts.replace(node, count);
