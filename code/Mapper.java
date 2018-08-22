@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.io.File;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * This is the main class for the mapping program. It extends the GUI abstract
@@ -48,6 +49,7 @@ public class Mapper extends GUI {
 	private boolean findingRoute;
 	private Node node1;
 	private Node node2;
+	private boolean usingTime;
 
 	@Override
 	protected void redraw(Graphics g) {
@@ -198,11 +200,31 @@ public class Mapper extends GUI {
 		graph.setHighlightedSegments(new ArrayList<>());
 	}
 
+	@Override
+	protected void setDistance() {
+		usingTime = false;
+	}
+
+	@Override
+	protected void setTime() {
+		usingTime = true;
+	}
+
 	private void findRoute() {
 		Searcher searcher = new Searcher(graph);
-		List<Segment> path = searcher.findShortestPath(node1, node2, n -> n.location.distance(node2.location));
+		Function<Node, Double> heuristic;
+		Function<Segment, Double> cost;
+		if(usingTime){
 
-		double totalDistance = 0;
+		}else {
+
+		}
+		List<Segment> path = searcher.findShortestPath(node1, node2, e -> e.length , n -> n.location.distance(node2.location));
+
+
+
+		String unit;
+		double totalCost = 0;
 		String stringPath = "";
 		String road = "";
 		double roadLength = 0;
@@ -217,10 +239,10 @@ public class Mapper extends GUI {
 				roadLength = s.length;
 			}
 			road = s.road.name;
-			totalDistance+=s.length;
+			totalCost+=s.length;
 		}
 		stringPath += String.format("%.2f", roadLength)+"km\n\n";
-		stringPath += "Total distance = "+ String.format("%.2f", totalDistance)+"km";
+		stringPath += "Total distance = "+ String.format("%.2f", totalCost)+"km";
 
 		graph.setHighlightedSegments(path);
 		getTextOutputArea().setText(stringPath);

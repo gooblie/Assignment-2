@@ -61,6 +61,12 @@ public abstract class GUI {
 
 	protected abstract void findArtPnts();
 
+	protected abstract void setDistance();
+
+	protected abstract void setTime();
+
+
+
 
 	/**
 	 * Is called when the user has successfully selected a directory to load the
@@ -278,6 +284,24 @@ public abstract class GUI {
 			}
 		});
 
+		JRadioButton distanceButton = new JRadioButton("Distance");
+		routeFinder.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setDistance();
+				redraw();
+			}
+		});
+
+		JRadioButton timeButton = new JRadioButton("Time");
+		routeFinder.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setTime();
+				redraw();
+			}
+		});
+
 		JButton findArticulationPoints = new JButton("Find Articulation Points");
 		findArticulationPoints.addActionListener(new ActionListener() {
 			@Override
@@ -363,6 +387,12 @@ public abstract class GUI {
 		controls.add(Box.createRigidArea(new Dimension(5, 0)));
 		controls.add(search);
 		controls.add(routeFinder);
+
+		ButtonGroup group = new ButtonGroup();
+		group.add(distanceButton);
+		group.add(timeButton);
+		controls.add(distanceButton);
+		controls.add(timeButton);
 		controls.add(findArticulationPoints);
 
 		/*

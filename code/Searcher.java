@@ -28,7 +28,7 @@ public class Searcher {
         return edges;
     }
 
-    public List<Segment> findShortestPath(Node start, Node goal, Function<Node, Double> heuristic) {
+    public List<Segment> findShortestPath(Node start, Node goal, Function<Segment, Double> costFunction, Function<Node, Double> heuristic) {
         PriorityQueue<SearchNode> open = new PriorityQueue<>(11, new Comparator<SearchNode>() {
             @Override
             public int compare(SearchNode o1, SearchNode o2) {
@@ -47,7 +47,7 @@ public class Searcher {
             for(Segment edge: neighbors.keySet()){
                 Node neighbor = neighbors.get(edge);
                 if (!closed.contains(neighbor)){
-                    double cost = edge.length;
+                    double cost = costFunction.apply(edge);
                     double g = node.getG() + cost;
                     double f = g + heuristic.apply(neighbor);
                     open.add(new SearchNode(neighbor, node, edge, g, f));
