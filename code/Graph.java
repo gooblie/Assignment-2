@@ -49,6 +49,7 @@ public class Graph {
 			}
 		}
 		//draw all the highlighted segments
+		g2.setColor(Color.GREEN);
 		for (Segment segment: highlightedSegments) {
 			segment.draw(g2, origin, scale);
 		}

@@ -29,12 +29,7 @@ public class Searcher {
     }
 
     public List<Segment> findShortestPath(Node start, Node goal, Function<Segment, Double> costFunction, Function<Node, Double> heuristic) {
-        PriorityQueue<SearchNode> open = new PriorityQueue<>(11, new Comparator<SearchNode>() {
-            @Override
-            public int compare(SearchNode o1, SearchNode o2) {
-                return Double.compare(o1.getF(), o2.getF());
-            }
-        });
+        PriorityQueue<SearchNode> open = new PriorityQueue<>(11, (o1, o2) -> Double.compare(o1.getF(), o2.getF()));
         open.add(new SearchNode(start, null, null, 0, heuristic.apply(start)));
         Set<Node> closed = new HashSet<>();
         while(!open.isEmpty()){

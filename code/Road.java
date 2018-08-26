@@ -22,7 +22,34 @@ public class Road {
 		this.city = city;
 		this.name = label;
 		this.components = new HashSet<Segment>();
-		this.speed = speed;
+		switch (speed){
+			case(0):
+				this.speed=5;
+				break;
+			case(1):
+				this.speed=20;
+				break;
+			case(2):
+				this.speed=40;
+				break;
+			case(3):
+				this.speed=60;
+				break;
+			case(4):
+				this.speed=80;
+				break;
+			case(5):
+				this.speed=100;
+				break;
+			case(6):
+				this.speed=110;
+				break;
+			case(7):
+				this.speed=120;
+				break;
+			default:
+				this.speed=120;
+		}
 		this.oneway = oneway == 1;
 	}
 

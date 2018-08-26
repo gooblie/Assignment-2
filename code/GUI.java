@@ -61,9 +61,6 @@ public abstract class GUI {
 
 	protected abstract void findArtPnts();
 
-	protected abstract void setDistance();
-
-	protected abstract void setTime();
 
 
 
@@ -159,6 +156,10 @@ public abstract class GUI {
 
 	private int prevX;
 	private int prevY;
+
+	JRadioButton timeButton;
+	JRadioButton distanceButton;
+
 
 	public GUI() {
 		initialise();
@@ -284,23 +285,10 @@ public abstract class GUI {
 			}
 		});
 
-		JRadioButton distanceButton = new JRadioButton("Distance");
-		routeFinder.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setDistance();
-				redraw();
-			}
-		});
+		distanceButton = new JRadioButton("Distance");
+		distanceButton.setSelected(true);
 
-		JRadioButton timeButton = new JRadioButton("Time");
-		routeFinder.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setTime();
-				redraw();
-			}
-		});
+		timeButton = new JRadioButton("Time");
 
 		JButton findArticulationPoints = new JButton("Find Articulation Points");
 		findArticulationPoints.addActionListener(new ActionListener() {

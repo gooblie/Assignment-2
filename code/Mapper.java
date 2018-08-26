@@ -49,7 +49,6 @@ public class Mapper extends GUI {
 	private boolean findingRoute;
 	private Node node1;
 	private Node node2;
-	private boolean usingTime;
 
 	@Override
 	protected void redraw(Graphics g) {
@@ -200,30 +199,18 @@ public class Mapper extends GUI {
 		graph.setHighlightedSegments(new ArrayList<>());
 	}
 
-	@Override
-	protected void setDistance() {
-		usingTime = false;
-	}
-
-	@Override
-	protected void setTime() {
-		usingTime = true;
-	}
-
 	private void findRoute() {
 		Searcher searcher = new Searcher(graph);
-		Function<Node, Double> heuristic;
-		Function<Segment, Double> cost;
-		if(usingTime){
-
-		}else {
-
+		Function<Node, Double> heuristic = n -> n.location.distance(node2.location);
+		Function<Segment, Double> cost = e -> e.length;
+		String unit = "km";
+		if(timeButton.isSelected()){
+			heuristic = n -> (n.location.distance(node2.location)/120)*60;
+			cost = e -> (e.length/e.road.speed)*60;
+			unit = "mins";
 		}
-		List<Segment> path = searcher.findShortestPath(node1, node2, e -> e.length , n -> n.location.distance(node2.location));
+		List<Segment> path = searcher.findShortestPath(node1, node2, cost, heuristic);
 
-
-
-		String unit;
 		double totalCost = 0;
 		String stringPath = "";
 		String road = "";
@@ -233,7 +220,7 @@ public class Mapper extends GUI {
 				roadLength += s.length;
 			}else{
 				if(roadLength!=0){
-					stringPath += String.format("%.2f", roadLength)+"km\n";
+					stringPath += String.format("%.2f", roadLength)+unit+"\n";
 				}
 				stringPath+=s.road.name+": ";
 				roadLength = s.length;
@@ -241,8 +228,8 @@ public class Mapper extends GUI {
 			road = s.road.name;
 			totalCost+=s.length;
 		}
-		stringPath += String.format("%.2f", roadLength)+"km\n\n";
-		stringPath += "Total distance = "+ String.format("%.2f", totalCost)+"km";
+		stringPath += String.format("%.2f", roadLength)+unit+"\n\n";
+		stringPath += "Total = "+ String.format("%.2f", totalCost)+unit;
 
 		graph.setHighlightedSegments(path);
 		getTextOutputArea().setText(stringPath);
